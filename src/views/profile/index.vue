@@ -8,27 +8,13 @@
             <!-- 头像和昵称部分 -->
             <div class="relative w-100px h-100px flex-center">
               <el-avatar :src="userProfile.avatar" :size="100" />
-              <el-button
-                type="info"
-                class="absolute bottom-0 right-0 cursor-pointer"
-                circle
-                :icon="Camera"
-                size="small"
-                @click="triggerFileUpload"
-              />
-              <input
-                type="file"
-                ref="fileInput"
-                style="display: none"
-                @change="handleFileChange"
-              />
+              <el-button type="info" class="absolute bottom-0 right-0 cursor-pointer" circle :icon="Camera" size="small"
+                @click="triggerFileUpload" />
+              <input type="file" ref="fileInput" style="display: none" @change="handleFileChange" />
             </div>
             <div class="mt-5">
-              {{ userProfile.nickname }}
-              <el-icon
-                class="align-middle cursor-pointer"
-                @click="handleOpenDialog(DialogType.ACCOUNT)"
-              >
+              {{ userProfile.name }}
+              <el-icon class="align-middle cursor-pointer" @click="handleOpenDialog(DialogType.ACCOUNT)">
                 <Edit />
               </el-icon>
             </div>
@@ -37,14 +23,13 @@
               <!-- 用户名 -->
               <el-descriptions-item>
                 <template #label>
-                  <el-icon class="align-middle"><User /></el-icon>
+                  <el-icon class="align-middle">
+                    <User />
+                  </el-icon>
                   用户名
                 </template>
-                {{ userProfile.username }}
-                <el-icon
-                  v-if="userProfile.gender === 1"
-                  class="align-middle color-blue"
-                >
+                {{ userProfile.userName }}
+                <el-icon v-if="userProfile.sex === 1" class="align-middle color-blue">
                   <Male />
                 </el-icon>
                 <el-icon v-else class="align-middle color-pink">
@@ -53,25 +38,29 @@
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
-                  <el-icon class="align-middle"><Phone /></el-icon>
+                  <el-icon class="align-middle">
+                    <Phone />
+                  </el-icon>
                   手机号码
                 </template>
-                {{ userProfile.mobile }}
+                {{ userProfile.phone }}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
-                  <el-icon class="align-middle"><Message /></el-icon>
+                  <el-icon class="align-middle">
+                    <Message />
+                  </el-icon>
                   邮箱
                 </template>
                 {{ userProfile.email }}
               </el-descriptions-item>
-              <el-descriptions-item>
+              <!-- <el-descriptions-item>
                 <template #label>
                   <SvgIcon icon-class="tree" />
                   部门
                 </template>
                 {{ userProfile.deptName }}
-              </el-descriptions-item>
+              </el-descriptions-item> -->
               <el-descriptions-item>
                 <template #label>
                   <SvgIcon icon-class="role" />
@@ -82,7 +71,9 @@
 
               <el-descriptions-item>
                 <template #label>
-                  <el-icon class="align-middle"><Timer /></el-icon>
+                  <el-icon class="align-middle">
+                    <Timer />
+                  </el-icon>
                   创建日期
                 </template>
                 {{ userProfile.createTime }}
@@ -101,13 +92,8 @@
               <div class="font-bold">账户密码</div>
               <div class="text-14px mt-2">
                 定期修改密码有助于保护账户安全
-                <el-button
-                  type="primary"
-                  plain
-                  size="small"
-                  @click="() => handleOpenDialog(DialogType.PASSWORD)"
-                  class="ml-5"
-                >
+                <el-button type="primary" plain size="small" @click="() => handleOpenDialog(DialogType.PASSWORD)"
+                  class="ml-5">
                   修改
                 </el-button>
               </div>
@@ -117,28 +103,16 @@
           <div class="mt-5">
             <div class="font-bold">绑定手机</div>
             <div class="text-14px mt-2">
-              <span v-if="userProfile.mobile">
-                已绑定手机号：{{ userProfile.mobile }}
+              <span v-if="userProfile.phone">
+                已绑定手机号：{{ userProfile.phone }}
               </span>
               <span v-else>未绑定手机</span>
-              <el-button
-                type="primary"
-                plain
-                size="small"
-                @click="() => handleOpenDialog(DialogType.MOBILE)"
-                class="ml-5"
-                v-if="userProfile.mobile"
-              >
+              <el-button type="primary" plain size="small" @click="() => handleOpenDialog(DialogType.MOBILE)"
+                class="ml-5" v-if="userProfile.phone">
                 更换
               </el-button>
-              <el-button
-                type="primary"
-                plain
-                size="small"
-                @click="() => handleOpenDialog(DialogType.MOBILE)"
-                class="ml-5"
-                v-else
-              >
+              <el-button type="primary" plain size="small" @click="() => handleOpenDialog(DialogType.MOBILE)"
+                class="ml-5" v-else>
                 绑定
               </el-button>
             </div>
@@ -151,24 +125,12 @@
                 已绑定邮箱：{{ userProfile.email }}
               </span>
               <span v-else>未绑定邮箱</span>
-              <el-button
-                type="primary"
-                plain
-                size="small"
-                @click="() => handleOpenDialog(DialogType.EMAIL)"
-                class="ml-5"
-                v-if="userProfile.email"
-              >
+              <el-button type="primary" plain size="small" @click="() => handleOpenDialog(DialogType.EMAIL)"
+                class="ml-5" v-if="userProfile.email">
                 更换
               </el-button>
-              <el-button
-                type="primary"
-                plain
-                size="small"
-                @click="() => handleOpenDialog(DialogType.EMAIL)"
-                class="ml-5"
-                v-else
-              >
+              <el-button type="primary" plain size="small" @click="() => handleOpenDialog(DialogType.EMAIL)"
+                class="ml-5" v-else>
                 绑定
               </el-button>
             </div>
@@ -180,69 +142,39 @@
     <!-- 弹窗 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" :width="500">
       <!-- 账号资料 -->
-      <el-form
-        v-if="dialog.type === DialogType.ACCOUNT"
-        :model="userProfileForm"
-        ref="userProfileFormRef"
-        :label-width="100"
-      >
+      <el-form v-if="dialog.type === DialogType.ACCOUNT" :model="userProfileForm" ref="userProfileFormRef"
+        :label-width="100">
         <el-form-item label="昵称">
-          <el-input v-model="userProfileForm.nickname" />
+          <el-input v-model="userProfileForm.name" />
         </el-form-item>
         <el-form-item label="性别">
-          <dictionary v-model="userProfileForm.gender" code="gender" />
+          <dictionary v-model="userProfileForm.sex" code="gender" />
         </el-form-item>
       </el-form>
 
       <!-- 修改密码 -->
-      <el-form
-        v-if="dialog.type === DialogType.PASSWORD"
-        :model="passwordChangeForm"
-        :rules="passwordChangeRules"
-        ref="passwordChangeFormRef"
-        :label-width="100"
-      >
+      <el-form v-if="dialog.type === DialogType.PASSWORD" :model="passwordChangeForm" :rules="passwordChangeRules"
+        ref="passwordChangeFormRef" :label-width="100">
         <el-form-item label="原密码" prop="oldPassword">
-          <el-input
-            type="password"
-            v-model="passwordChangeForm.oldPassword"
-            show-password
-          />
+          <el-input type="password" v-model="passwordChangeForm.oldPassword" show-password />
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
-          <el-input
-            type="password"
-            v-model="passwordChangeForm.newPassword"
-            show-password
-          />
+          <el-input type="password" v-model="passwordChangeForm.newPassword" show-password />
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input
-            type="password"
-            v-model="passwordChangeForm.confirmPassword"
-            show-password
-          />
+          <el-input type="password" v-model="passwordChangeForm.confirmPassword" show-password />
         </el-form-item>
       </el-form>
       <!-- 绑定手机 -->
-      <el-form
-        v-else-if="dialog.type === DialogType.MOBILE"
-        :model="mobileBindingForm"
-        :rules="mobileBindingRules"
-        ref="mobileBindingFormRef"
-        :label-width="100"
-      >
+      <el-form v-else-if="dialog.type === DialogType.MOBILE" :model="mobileBindingForm" :rules="mobileBindingRules"
+        ref="mobileBindingFormRef" :label-width="100">
         <el-form-item label="手机号码" prop="mobile">
           <el-input v-model="mobileBindingForm.mobile" style="width: 250px" />
         </el-form-item>
         <el-form-item label="验证码" prop="code">
           <el-input v-model="mobileBindingForm.code" style="width: 250px">
             <template #append>
-              <el-button
-                class="ml-5"
-                :disabled="mobileCountdown > 0"
-                @click="handleSendVerificationCode('MOBILE')"
-              >
+              <el-button class="ml-5" :disabled="mobileCountdown > 0" @click="handleSendVerificationCode('MOBILE')">
                 {{
                   mobileCountdown > 0
                     ? `${mobileCountdown}s后重新发送`
@@ -255,24 +187,15 @@
       </el-form>
 
       <!-- 绑定邮箱 -->
-      <el-form
-        v-else-if="dialog.type === DialogType.EMAIL"
-        :model="emailBindingForm"
-        :rules="emailBindingRules"
-        ref="emailBindingFormRef"
-        :label-width="100"
-      >
+      <el-form v-else-if="dialog.type === DialogType.EMAIL" :model="emailBindingForm" :rules="emailBindingRules"
+        ref="emailBindingFormRef" :label-width="100">
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="emailBindingForm.email" style="width: 250px" />
         </el-form-item>
         <el-form-item label="验证码" prop="code">
           <el-input v-model="emailBindingForm.code" style="width: 250px">
             <template #append>
-              <el-button
-                class="ml-5"
-                :disabled="emailCountdown > 0"
-                @click="handleSendVerificationCode('EMAIL')"
-              >
+              <el-button class="ml-5" :disabled="emailCountdown > 0" @click="handleSendVerificationCode('EMAIL')">
                 {{
                   emailCountdown > 0
                     ? `${emailCountdown}s后重新发送`
@@ -379,8 +302,8 @@ const handleOpenDialog = (type: DialogType) => {
       dialog.title = "账号资料";
       // 初始化表单数据
       userProfileForm.id = userProfile.value.id;
-      userProfileForm.nickname = userProfile.value.nickname;
-      userProfileForm.gender = userProfile.value.gender;
+      userProfileForm.name = userProfile.value.name;
+      userProfileForm.sex = userProfile.value.sex;
       break;
     case DialogType.PASSWORD:
       dialog.title = "修改密码";
@@ -490,6 +413,7 @@ const handleFileChange = async (event: Event) => {
     // 调用文件上传API
     try {
       const data = await FileAPI.upload(file);
+      console.log("data", data);
       // 更新用户头像
       userProfile.value.avatar = data.url;
       // 更新用户信息

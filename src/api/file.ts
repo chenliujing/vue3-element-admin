@@ -4,7 +4,7 @@ class FileAPI {
   /**
    * 文件上传地址
    */
-  static uploadUrl = import.meta.env.VITE_APP_BASE_API + "/api/v1/files";
+  static uploadUrl = import.meta.env.VITE_APP_API_URL + "api/File";
 
   /**
    * 上传文件
@@ -15,7 +15,7 @@ class FileAPI {
     const formData = new FormData();
     formData.append("file", file);
     return request<any, FileInfo>({
-      url: "/api/v1/files",
+      url: FileAPI.uploadUrl,
       method: "post",
       data: formData,
       headers: {

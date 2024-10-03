@@ -9,3 +9,7 @@ public
 
 src/assets
 stats.html
+# 创建/编辑 .prettierignore 文件
+# 忽略指定文件
+src/views/
+# 忽略整个目录

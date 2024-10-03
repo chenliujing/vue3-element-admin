@@ -8,6 +8,7 @@ export const useUserStore = defineStore("user", () => {
   const user = ref<UserInfo>({
     roles: [],
     perms: [],
+    avatar: "",
   });
 
   /**
@@ -16,12 +17,12 @@ export const useUserStore = defineStore("user", () => {
    * @param {LoginData}
    * @returns
    */
-  function login(loginData: LoginData) {
+  function login(userName: string, password: string) {
     return new Promise<void>((resolve, reject) => {
-      AuthAPI.login(loginData)
+      AuthAPI.login(userName, password)
         .then((data) => {
-          const { tokenType, accessToken } = data;
-          localStorage.setItem(TOKEN_KEY, tokenType + " " + accessToken); // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
+          console.log(data);
+          localStorage.setItem(TOKEN_KEY, "Bearer " + data.token); // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
           resolve();
         })
         .catch((error) => {
@@ -43,6 +44,7 @@ export const useUserStore = defineStore("user", () => {
             reject("getUserInfo: roles must be a non-null array!");
             return;
           }
+          console.log(data);
           Object.assign(user.value, { ...data });
           resolve(data);
         })
@@ -54,17 +56,8 @@ export const useUserStore = defineStore("user", () => {
 
   // user logout
   function logout() {
-    return new Promise<void>((resolve, reject) => {
-      AuthAPI.logout()
-        .then(() => {
-          localStorage.setItem(TOKEN_KEY, "");
-          location.reload(); // 清空路由
-          resolve();
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+    localStorage.setItem(TOKEN_KEY, "");
+    location.reload(); // 清空路由
   }
 
   // remove token

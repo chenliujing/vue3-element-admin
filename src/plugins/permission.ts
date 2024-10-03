@@ -24,14 +24,16 @@ export function setupPermission() {
         NProgress.done();
       } else {
         const userStore = useUserStore();
+        console.log(userStore);
         const hasRoles =
           userStore.user.roles && userStore.user.roles.length > 0;
-
+        console.log("hasRoles", hasRoles);
         if (hasRoles) {
           // 如果未匹配到任何路由，跳转到404页面
           if (to.matched.length === 0) {
             next(from.name ? { name: from.name } : "/404");
           } else {
+            console.log("to", to);
             // 如果路由参数中有 title，覆盖路由元信息中的 title
             const title =
               (to.params.title as string) || (to.query.title as string);
@@ -45,9 +47,13 @@ export function setupPermission() {
           try {
             await userStore.getUserInfo();
             const dynamicRoutes = await permissionStore.generateRoutes();
-            dynamicRoutes.forEach((route: RouteRecordRaw) =>
-              router.addRoute(route)
+            console.log("1111", dynamicRoutes);
+            dynamicRoutes.forEach(
+              (route: RouteRecordRaw) => router.addRoute(route)
+              // console.log(route)
             );
+            const routes = router.getRoutes();
+            console.log("当前路由：", routes);
             next({ ...to, replace: true });
           } catch (error) {
             // 移除 token 并重定向到登录页，携带当前页面路由作为跳转参数

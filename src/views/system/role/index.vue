@@ -3,12 +3,7 @@
     <div class="search-container">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
-          <el-input
-            v-model="queryParams.keywords"
-            placeholder="角色名称"
-            clearable
-            @keyup.enter="handleQuery"
-          />
+          <el-input v-model="queryParams.keywords" placeholder="角色名称" clearable @keyup.enter="handleQuery" />
         </el-form-item>
 
         <el-form-item>
@@ -30,28 +25,16 @@
           <i-ep-plus />
           新增
         </el-button>
-        <el-button
-          type="danger"
-          :disabled="ids.length === 0"
-          @click="handleDelete()"
-        >
+        <el-button type="danger" :disabled="ids.length === 0" @click="handleDelete()">
           <i-ep-delete />
           删除
         </el-button>
       </template>
 
-      <el-table
-        ref="dataTableRef"
-        v-loading="loading"
-        :data="roleList"
-        highlight-current-row
-        border
-        @selection-change="handleSelectionChange"
-      >
+      <el-table ref="dataTableRef" v-loading="loading" :data="roleList" highlight-current-row border
+        @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="角色名称" prop="name" min-width="100" />
-        <el-table-column label="角色编码" prop="code" width="150" />
-
+        <el-table-column label="角色名称" prop="roleName" min-width="100" />
         <el-table-column label="状态" align="center" width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.status === 1" type="success">正常</el-tag>
@@ -63,30 +46,15 @@
 
         <el-table-column fixed="right" label="操作" width="220">
           <template #default="scope">
-            <el-button
-              type="primary"
-              size="small"
-              link
-              @click="handleOpenAssignPermDialog(scope.row)"
-            >
+            <el-button type="primary" size="small" link @click="handleOpenAssignPermDialog(scope.row)">
               <i-ep-position />
               分配权限
             </el-button>
-            <el-button
-              type="primary"
-              size="small"
-              link
-              @click="handleOpenDialog(scope.row.id)"
-            >
+            <el-button type="primary" size="small" link @click="handleOpenDialog(scope.row.id)">
               <i-ep-edit />
               编辑
             </el-button>
-            <el-button
-              type="danger"
-              size="small"
-              link
-              @click="handleDelete(scope.row.id)"
-            >
+            <el-button type="danger" size="small" link @click="handleDelete(scope.row.id)">
               <i-ep-delete />
               删除
             </el-button>
@@ -94,36 +62,17 @@
         </el-table-column>
       </el-table>
 
-      <pagination
-        v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
-        @pagination="handleQuery"
-      />
+      <pagination v-if="total > 0" v-model:total="total" v-model:page="queryParams.pageIndex"
+        v-model:limit="queryParams.pageSize" @pagination="handleQuery" />
     </el-card>
 
     <!-- 角色表单弹窗 -->
-    <el-dialog
-      v-model="dialog.visible"
-      :title="dialog.title"
-      width="500px"
-      @close="handleCloseDialog"
-    >
-      <el-form
-        ref="roleFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-      >
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入角色名称" />
+    <el-dialog v-model="dialog.visible" :title="dialog.title" width="500px" @close="handleCloseDialog">
+      <el-form ref="roleFormRef" :model="formData" :rules="rules" label-width="100px">
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="formData.roleName" placeholder="请输入角色名称" />
         </el-form-item>
-
-        <el-form-item label="角色编码" prop="code">
-          <el-input v-model="formData.code" placeholder="请输入角色编码" />
-        </el-form-item>
-
+        <!-- 
         <el-form-item label="数据权限" prop="dataScope">
           <el-select v-model="formData.dataScope">
             <el-option :key="0" label="全部数据" :value="0" />
@@ -131,7 +80,7 @@
             <el-option :key="2" label="本部门数据" :value="2" />
             <el-option :key="3" label="本人数据" :value="3" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="formData.status">
@@ -141,12 +90,7 @@
         </el-form-item>
 
         <el-form-item label="排序" prop="sort">
-          <el-input-number
-            v-model="formData.sort"
-            controls-position="right"
-            :min="0"
-            style="width: 100px"
-          />
+          <el-input-number v-model="formData.sort" controls-position="right" :min="0" style="width: 100px" />
         </el-form-item>
       </el-form>
 
@@ -159,18 +103,9 @@
     </el-dialog>
 
     <!-- 分配权限弹窗 -->
-    <el-drawer
-      v-model="assignPermDialogVisible"
-      :title="'【' + checkedRole.name + '】权限分配'"
-      size="500"
-    >
+    <el-drawer v-model="assignPermDialogVisible" :title="'【' + checkedRole.name + '】权限分配'" size="500">
       <div class="flex-x-between">
-        <el-input
-          v-model="permKeywords"
-          clearable
-          class="w-[200px]"
-          placeholder="菜单权限名称"
-        >
+        <el-input v-model="permKeywords" clearable class="w-[200px]" placeholder="菜单权限名称">
           <template #prefix>
             <i-ep-search />
           </template>
@@ -181,11 +116,7 @@
             <i-ep-switch />
             {{ isExpanded ? "收缩" : "展开" }}
           </el-button>
-          <el-checkbox
-            v-model="parentChildLinked"
-            @change="handleparentChildLinkedChange"
-            class="ml-5"
-          >
+          <el-checkbox v-model="parentChildLinked" @change="handleparentChildLinkedChange" class="ml-5">
             父子联动
           </el-checkbox>
 
@@ -193,23 +124,14 @@
             <template #content>
               如果只需勾选菜单权限，不需要勾选子菜单或者按钮权限，请关闭父子联动
             </template>
-            <i-ep-QuestionFilled
-              class="ml-1 color-[--el-color-primary] inline-block cursor-pointer"
-            />
+            <i-ep-QuestionFilled class="ml-1 color-[--el-color-primary] inline-block cursor-pointer" />
           </el-tooltip>
         </div>
       </div>
 
-      <el-tree
-        ref="permTreeRef"
-        node-key="value"
-        show-checkbox
-        :data="menuPermOptions"
-        :filter-node-method="handlePermFilter"
-        :default-expand-all="true"
-        :check-strictly="!parentChildLinked"
-        class="mt-5"
-      >
+      <el-tree ref="permTreeRef" node-key="value" show-checkbox :data="menuPermOptions"
+        :filter-node-method="handlePermFilter" :default-expand-all="true" :check-strictly="!parentChildLinked"
+        class="mt-5">
         <template #default="{ data }">
           {{ data.label }}
         </template>
@@ -245,7 +167,7 @@ const ids = ref<number[]>([]);
 const total = ref(0);
 
 const queryParams = reactive<RolePageQuery>({
-  pageNum: 1,
+  pageIndex: 1,
   pageSize: 10,
 });
 
@@ -264,13 +186,11 @@ const formData = reactive<RoleForm>({
   sort: 1,
   status: 1,
   code: "",
-  name: "",
+  roleName: "",
 });
 
 const rules = reactive({
   name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
-  code: [{ required: true, message: "请输入角色编码", trigger: "blur" }],
-  dataScope: [{ required: true, message: "请选择数据权限", trigger: "blur" }],
   status: [{ required: true, message: "请选择状态", trigger: "blur" }],
 });
 
@@ -303,7 +223,7 @@ function handleQuery() {
 /** 重置查询 */
 function handleResetQuery() {
   queryFormRef.value.resetFields();
-  queryParams.pageNum = 1;
+  queryParams.pageIndex = 1;
   handleQuery();
 }
 
@@ -332,7 +252,7 @@ function handleSubmit() {
       loading.value = true;
       const roleId = formData.id;
       if (roleId) {
-        RoleAPI.update(roleId, formData)
+        RoleAPI.update(formData)
           .then(() => {
             ElMessage.success("修改成功");
             handleCloseDialog();
@@ -400,7 +320,7 @@ async function handleOpenAssignPermDialog(row: RolePageVO) {
     loading.value = true;
 
     checkedRole.value.id = roleId;
-    checkedRole.value.name = row.name;
+    checkedRole.value.name = row.roleName;
 
     // 获取所有的菜单
     menuPermOptions.value = await MenuAPI.getOptions();

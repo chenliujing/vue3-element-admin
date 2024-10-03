@@ -6,10 +6,7 @@
       <el-row justify="space-between">
         <el-col :span="18" :xs="24">
           <div class="flex h-full items-center">
-            <img
-              class="w-20 h-20 mr-5 rounded-full"
-              :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'"
-            />
+            <img class="w-20 h-20 mr-5 rounded-full" :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'" />
             <div>
               <p>{{ greetings }}</p>
               <p class="text-sm text-gray">
@@ -21,11 +18,7 @@
 
         <el-col :span="6" :xs="24">
           <div class="flex h-full items-center justify-around">
-            <el-statistic
-              v-for="item in statisticData"
-              :key="item.key"
-              :value="item.value"
-            >
+            <el-statistic v-for="item in statisticData" :key="item.key" :value="item.value">
               <template #title>
                 <div class="flex items-center">
                   <svg-icon :icon-class="item.iconClass" size="20px" />
@@ -56,41 +49,27 @@
             <span class="text-lg">{{ onlineUserCount }}</span>
             <svg-icon icon-class="user" size="2em" />
           </div>
-          <div
-            class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
-          >
+          <div class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]">
             <span>总用户数</span>
             <span>5</span>
           </div>
         </el-card>
       </el-col>
 
-      <el-col
-        :xs="24"
-        :sm="12"
-        :lg="6"
-        v-for="(item, index) in visitStatsList"
-        :key="index"
-      >
+      <el-col :xs="24" :sm="12" :lg="6" v-for="(item, index) in visitStatsList" :key="index">
         <el-skeleton :loading="visitStatsLoading" :rows="5" animated>
           <template #template>
             <el-card>
               <template #header>
                 <div>
                   <el-skeleton-item variant="h3" style="width: 40%" />
-                  <el-skeleton-item
-                    variant="rect"
-                    style="float: right; width: 1em; height: 1em"
-                  />
+                  <el-skeleton-item variant="rect" style="float: right; width: 1em; height: 1em" />
                 </div>
               </template>
 
               <div class="flex-x-between">
                 <el-skeleton-item variant="text" style="width: 30%" />
-                <el-skeleton-item
-                  variant="circle"
-                  style="width: 2em; height: 2em"
-                />
+                <el-skeleton-item variant="circle" style="width: 2em; height: 2em" />
               </div>
               <div class="mt-5 flex-x-between">
                 <el-skeleton-item variant="text" style="width: 50%" />
@@ -114,13 +93,11 @@
               <div class="flex-x-between mt-2">
                 <div class="flex-y-center">
                   <span class="text-lg">{{ item.todayCount }}</span>
-                  <span
-                    :class="[
-                      'text-xs',
-                      'ml-2',
-                      getGrowthRateClass(item.growthRate),
-                    ]"
-                  >
+                  <span :class="[
+                    'text-xs',
+                    'ml-2',
+                    getGrowthRateClass(item.growthRate),
+                  ]">
                     <i-ep-top v-if="item.growthRate > 0" />
                     <i-ep-bottom v-else-if="item.growthRate < 0" />
                     {{ formatGrowthRate(item.growthRate) }}
@@ -129,9 +106,7 @@
                 <svg-icon :icon-class="item.icon" size="2em" />
               </div>
 
-              <div
-                class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]"
-              >
+              <div class="flex-x-between mt-2 text-sm text-[var(--el-text-color-secondary)]">
                 <span>总{{ item.title }}</span>
                 <span>{{ item.totalCount }}</span>
               </div>
@@ -152,32 +127,31 @@
             <div class="flex-x-between">
               <div class="flex-y-center">
                 通知公告
-                <el-icon class="ml-1"><Notification /></el-icon>
+                <el-icon class="ml-1">
+                  <Notification />
+                </el-icon>
               </div>
               <el-link type="primary">
                 <span class="text-xs">查看更多</span>
-                <el-icon class="text-xs"><ArrowRight /></el-icon>
+                <el-icon class="text-xs">
+                  <ArrowRight />
+                </el-icon>
               </el-link>
             </div>
           </template>
 
           <el-scrollbar height="400px">
-            <div
-              v-for="(item, index) in notices"
-              :key="index"
-              class="flex-y-center py-3"
-            >
+            <div v-for="(item, index) in notices" :key="index" class="flex-y-center py-3">
               <el-tag :type="getNoticeLevelTag(item.level)" size="small">
                 {{ getNoticeLabel(item.type) }}
               </el-tag>
-              <el-text
-                truncated
-                class="!mx-2 flex-1 !text-xs !text-[var(--el-text-color-secondary)]"
-              >
+              <el-text truncated class="!mx-2 flex-1 !text-xs !text-[var(--el-text-color-secondary)]">
                 {{ item.title }}
               </el-text>
               <el-link>
-                <el-icon class="text-sm"><View /></el-icon>
+                <el-icon class="text-sm">
+                  <View />
+                </el-icon>
               </el-link>
             </div>
           </el-scrollbar>
@@ -208,11 +182,11 @@ const greetings = computed(() => {
   if (hours >= 6 && hours < 8) {
     return "晨起披衣出草堂，轩窗已自喜微凉🌅！";
   } else if (hours >= 8 && hours < 12) {
-    return "上午好，" + userStore.user.nickname + "！";
+    return "上午好，" + userStore.user.userName + "！";
   } else if (hours >= 12 && hours < 18) {
-    return "下午好，" + userStore.user.nickname + "！";
+    return "下午好，" + userStore.user.userName + "！";
   } else if (hours >= 18 && hours < 24) {
-    return "晚上好，" + userStore.user.nickname + "！";
+    return "晚上好，" + userStore.user.userName + "！";
   } else {
     return "偷偷向银河要了一把碎星，只等你闭上眼睛撒入你的梦中，晚安🌛！";
   }
@@ -411,7 +385,7 @@ function connectWebSocket() {
       console.error("Broker reported error: " + frame.headers["message"]);
       console.error("Additional details: " + frame.body);
     },
-    onDisconnect: () => {},
+    onDisconnect: () => { },
   });
 
   stompClient.activate();

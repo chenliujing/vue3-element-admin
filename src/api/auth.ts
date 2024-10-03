@@ -1,29 +1,20 @@
 import request from "@/utils/request";
 
-const AUTH_BASE_URL = "/api/v1/auth";
-
+const AUTH_BASE_URL = "/api/Account";
 class AuthAPI {
   /** 登录 接口*/
-  static login(data: LoginData) {
-    const formData = new FormData();
-    formData.append("username", data.username);
-    formData.append("password", data.password);
-    formData.append("captchaKey", data.captchaKey);
-    formData.append("captchaCode", data.captchaCode);
+  static login(userName: string, password: string) {
+    console.log(userName);
     return request<any, LoginResult>({
-      url: `${AUTH_BASE_URL}/login`,
+      url: `${AUTH_BASE_URL}/AdminLogin?userName=${userName}&&password=${password}`,
       method: "post",
-      data: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
     });
   }
 
   /** 注销 接口*/
   static logout() {
     return request({
-      url: `${AUTH_BASE_URL}/logout`,
+      url: `${AUTH_BASE_URL}/Logout`,
       method: "delete",
     });
   }
@@ -42,19 +33,19 @@ export default AuthAPI;
 /** 登录请求参数 */
 export interface LoginData {
   /** 用户名 */
-  username: string;
+  userName: string;
   /** 密码 */
   password: string;
-  /** 验证码缓存key */
-  captchaKey: string;
-  /** 验证码 */
-  captchaCode: string;
+  // /** 验证码缓存key */
+  // captchaKey: string;
+  // /** 验证码 */
+  // captchaCode: string;
 }
 
 /** 登录响应 */
 export interface LoginResult {
   /** 访问token */
-  accessToken?: string;
+  token?: string;
   /** 过期时间(单位：毫秒) */
   expires?: number;
   /** 刷新token */

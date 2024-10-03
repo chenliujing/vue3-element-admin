@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import setupPlugins from "@/plugins";
-
+import.meta.env.VITE_APP_Image_URL;
 // 本地SVG图标
 import "virtual:svg-icons-register";
 

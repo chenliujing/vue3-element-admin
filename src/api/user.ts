@@ -1,6 +1,6 @@
 import request from "@/utils/request";
-
-const USER_BASE_URL = "/api/v1/users";
+import { TOKEN_KEY } from "@/enums/CacheEnum";
+const USER_BASE_URL = "/api/SysUser";
 
 class UserAPI {
   /**
@@ -8,10 +8,20 @@ class UserAPI {
    *
    * @returns 登录用户昵称、头像信息，包括角色和权限
    */
+
   static getInfo() {
+    const accessToken = localStorage.getItem(TOKEN_KEY);
+
+    // 发起请求并处理响应或错误
     return request<any, UserInfo>({
-      url: `${USER_BASE_URL}/me`,
+      url: `${USER_BASE_URL}/GetSysUserById`,
       method: "get",
+    }).catch((error) => {
+      // 在这里输出错误信息
+      console.error("An error occurred while fetching user info:", error);
+
+      // 根据您的应用逻辑，您可能还想要抛出错误，或者返回一个特定的错误响应
+      throw error; // 或者返回一个自定义的错误对象
     });
   }
 
@@ -22,7 +32,7 @@ class UserAPI {
    */
   static getPage(queryParams: UserPageQuery) {
     return request<any, PageResult<UserPageVO[]>>({
-      url: `${USER_BASE_URL}/page`,
+      url: `${USER_BASE_URL}/GetUserPage`,
       method: "get",
       params: queryParams,
     });
@@ -36,7 +46,7 @@ class UserAPI {
    */
   static getFormData(userId: number) {
     return request<any, UserForm>({
-      url: `${USER_BASE_URL}/${userId}/form`,
+      url: `${USER_BASE_URL}/GetUserFormById/${userId}`,
       method: "get",
     });
   }
@@ -48,7 +58,7 @@ class UserAPI {
    */
   static add(data: UserForm) {
     return request({
-      url: `${USER_BASE_URL}`,
+      url: `${USER_BASE_URL}/AddUserForm`,
       method: "post",
       data: data,
     });
@@ -60,14 +70,37 @@ class UserAPI {
    * @param id 用户ID
    * @param data 用户表单数据
    */
-  static update(id: number, data: UserForm) {
+  static update(data: UserForm) {
     return request({
-      url: `${USER_BASE_URL}/${id}`,
+      url: `${USER_BASE_URL}/UpdateUserForm`,
       method: "put",
       data: data,
     });
   }
-
+  /**
+   * 分配用户角色
+   *
+   * @param id 用户ID
+   * @param data 用户表单数据
+   */
+  static assignRole(roleIds: string, userId: number) {
+    return request({
+      url: `${USER_BASE_URL}/AssignRole/${roleIds}/${userId}`,
+      method: "post",
+    });
+  }
+  /**
+   * 分配用户角色
+   *
+   * @param id 用户ID
+   * @param data 用户表单数据
+   */
+  static getRolesByUserId(userId: number) {
+    return request<any, number[]>({
+      url: `${USER_BASE_URL}/GetRolesById/${userId}`,
+      method: "GET",
+    });
+  }
   /**
    * 修改用户密码
    *
@@ -87,9 +120,9 @@ class UserAPI {
    *
    * @param ids 用户ID字符串，多个以英文逗号(,)分割
    */
-  static deleteByIds(ids: string) {
+  static deleteByIds(userIds: string) {
     return request({
-      url: `${USER_BASE_URL}/${ids}`,
+      url: `${USER_BASE_URL}/DeleteUser/${userIds}`,
       method: "delete",
     });
   }
@@ -140,7 +173,7 @@ class UserAPI {
   /** 获取个人中心用户信息 */
   static getProfile() {
     return request<any, UserProfileVO>({
-      url: `${USER_BASE_URL}/profile`,
+      url: `${USER_BASE_URL}/GetProfile`,
       method: "get",
     });
   }
@@ -148,7 +181,7 @@ class UserAPI {
   /** 修改个人中心用户信息 */
   static updateProfile(data: UserProfileForm) {
     return request({
-      url: `${USER_BASE_URL}/profile`,
+      url: `${USER_BASE_URL}/UpdateUserProfile`,
       method: "put",
       data: data,
     });
@@ -204,16 +237,11 @@ export interface UserInfo {
   userId?: number;
 
   /** 用户名 */
-  username?: string;
-
-  /** 昵称 */
-  nickname?: string;
-
-  /** 头像URL */
-  avatar?: string;
+  userName?: string;
 
   /** 角色 */
   roles: string[];
+  avatar: string;
 
   /** 权限 */
   perms: string[];
@@ -266,24 +294,24 @@ export interface UserPageVO {
 export interface UserForm {
   /** 用户头像 */
   avatar?: string;
+  userPwd?: string;
   /** 部门ID */
-  deptId?: number;
+  // deptId?: number;
   /** 邮箱 */
   email?: string;
-  /** 性别 */
-  gender?: number;
+  /** 性别(1:男;0:女) */
+  sex?: number;
   /** 用户ID */
   id?: number;
   /** 手机号 */
-  mobile?: string;
+  phone?: string;
   /** 昵称 */
-  nickname?: string;
+  userName?: string;
+  name?: string;
   /** 角色ID集合 */
   roleIds?: number[];
   /** 用户状态(1:正常;0:禁用) */
   status?: number;
-  /** 用户名 */
-  username?: string;
 }
 
 /** 个人中心用户信息 */
@@ -292,25 +320,25 @@ export interface UserProfileVO {
   id?: number;
 
   /** 用户名 */
-  username?: string;
+  userName?: string;
 
   /** 昵称 */
-  nickname?: string;
+  name?: string;
 
   /** 头像URL */
   avatar?: string;
 
   /** 性别 */
-  gender?: number;
+  sex?: number;
 
   /** 手机号 */
-  mobile?: string;
+  phone?: string;
 
   /** 邮箱 */
   email?: string;
 
   /** 部门名称 */
-  deptName?: string;
+  // deptName?: string;
 
   /** 角色名称，多个使用英文逗号(,)分割 */
   roleNames?: string;
@@ -325,19 +353,19 @@ export interface UserProfileForm {
   id?: number;
 
   /** 用户名 */
-  username?: string;
+  userName?: string;
 
-  /** 昵称 */
-  nickname?: string;
+  /** 姓名 */
+  name?: string;
 
   /** 头像URL */
   avatar?: string;
 
   /** 性别 */
-  gender?: number;
+  sex?: number;
 
   /** 手机号 */
-  mobile?: string;
+  phone?: string;
 
   /** 邮箱 */
   email?: string;

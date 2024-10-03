@@ -5,17 +5,11 @@
       <menu-search />
       <!--全屏 -->
       <div class="nav-action-item" @click="toggle">
-        <svg-icon
-          :icon-class="isFullscreen ? 'fullscreen-exit' : 'fullscreen'"
-        />
+        <svg-icon :icon-class="isFullscreen ? 'fullscreen-exit' : 'fullscreen'" />
       </div>
 
       <!-- 布局大小 -->
-      <el-tooltip
-        :content="$t('sizeSelect.tooltip')"
-        effect="dark"
-        placement="bottom"
-      >
+      <el-tooltip :content="$t('sizeSelect.tooltip')" effect="dark" placement="bottom">
         <size-select class="nav-action-item" />
       </el-tooltip>
 
@@ -32,17 +26,8 @@
         <template #dropdown>
           <div class="px-5 py-2">
             <el-tabs v-model="activeTab">
-              <el-tab-pane
-                v-for="(label, key) in MessageTypeLabels"
-                :label="label"
-                :name="key"
-                :key="key"
-              >
-                <div
-                  class="w-[380px] py-2"
-                  v-for="message in getFilteredMessages(key)"
-                  :key="message.id"
-                >
+              <el-tab-pane v-for="(label, key) in MessageTypeLabels" :label="label" :name="key" :key="key">
+                <div class="w-[380px] py-2" v-for="message in getFilteredMessages(key)" :key="message.id">
                   <el-link type="primary">
                     <el-text class="w-350px" size="default" truncated>
                       {{ message.title }}
@@ -55,7 +40,9 @@
             <div class="flex-x-between">
               <el-link type="primary" :underline="false">
                 <span class="text-xs">查看更多</span>
-                <el-icon class="text-xs"><ArrowRight /></el-icon>
+                <el-icon class="text-xs">
+                  <ArrowRight />
+                </el-icon>
               </el-link>
               <el-link type="primary" :underline="false">
                 <span class="text-xs">全部已读</span>
@@ -69,21 +56,15 @@
     <!-- 用户头像 -->
     <el-dropdown class="nav-action-item" trigger="click">
       <div class="flex-center h100% p10px">
-        <img
-          :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'"
-          class="rounded-full mr-10px w24px h24px"
-        />
-        <span>{{ userStore.user.username }}</span>
+        <img :src="userStore.user.avatar + '?imageView2/1/w/80/h/80'" class="rounded-full mr-10px w24px h24px" />
+        <span>{{ userStore.user.userName }}</span>
       </div>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item @click="handleOpenUserProfile">
             {{ $t("navbar.profile") }}
           </el-dropdown-item>
-          <a
-            target="_blank"
-            href="https://gitee.com/youlaiorg/vue3-element-admin"
-          >
+          <a target="_blank" href="https://gitee.com/youlaiorg/vue3-element-admin">
             <el-dropdown-item>{{ $t("navbar.gitee") }}</el-dropdown-item>
           </a>
           <a target="_blank" href="https://juejin.cn/post/7228990409909108793">

@@ -19,6 +19,7 @@ export const usePermissionStore = defineStore("permission", () => {
     return new Promise<RouteRecordRaw[]>((resolve, reject) => {
       MenuAPI.getRoutes()
         .then((data) => {
+          console.log("data", data);
           const dynamicRoutes = transformRoutes(data);
           routes.value = constantRoutes.concat(dynamicRoutes);
           resolve(dynamicRoutes);
@@ -56,6 +57,7 @@ const transformRoutes = (routes: RouteVO[]) => {
   const asyncRoutes: RouteRecordRaw[] = [];
   routes.forEach((route) => {
     const tmpRoute = { ...route } as RouteRecordRaw;
+    console.log("tmpRoute", tmpRoute);
     // 顶级目录，替换为 Layout 组件
     if (tmpRoute.component?.toString() == "Layout") {
       tmpRoute.component = Layout;
@@ -74,6 +76,7 @@ const transformRoutes = (routes: RouteVO[]) => {
     }
 
     asyncRoutes.push(tmpRoute);
+    console.log("asyncRoutes", asyncRoutes);
   });
 
   return asyncRoutes;
